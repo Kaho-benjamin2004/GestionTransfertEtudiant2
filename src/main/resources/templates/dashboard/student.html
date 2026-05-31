@@ -1,3 +1,153 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="fr" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Étudiant - Université de l'Excellence</title>-->
+<!--    <script src="https://cdn.tailwindcss.com"></script>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>-->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">-->
+<!--    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">-->
+<!--    <script>-->
+<!--        tailwind.config = {-->
+<!--            theme: {-->
+<!--                extend: {-->
+<!--                    colors: {-->
+<!--                        univ: { navy: '#133054', gold: '#bfa15f', navyLight: '#1d4270', goldLight: '#d2b67a', bg: '#f8fafc' }-->
+<!--                    },-->
+<!--                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] }-->
+<!--                }-->
+<!--            }-->
+<!--        }-->
+<!--    </script>-->
+<!--    <style>-->
+<!--        body { font-family: 'Plus Jakarta Sans', sans-serif; }-->
+<!--        .bg-campus-blur {-->
+<!--            background-image: linear-gradient(rgba(19, 48, 84, 0.4), rgba(15, 23, 42, 0.45)),-->
+<!--            url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1470&auto=format&fit=crop');-->
+<!--            background-size: cover;-->
+<!--            background-position: center;-->
+<!--            background-attachment: fixed;-->
+<!--        }-->
+<!--        .content-card {-->
+<!--            background: rgba(255, 255, 255, 0.95);-->
+<!--            backdrop-filter: blur(2px);-->
+<!--            border-radius: 1.5rem;-->
+<!--            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.02);-->
+<!--        }-->
+<!--        .custom-scrollbar::-webkit-scrollbar { width: 6px; }-->
+<!--        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }-->
+<!--        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body class="bg-campus-blur min-h-screen">-->
+
+<!--<div class="flex h-screen overflow-hidden">-->
+<!--    &lt;!&ndash; Sidebar étudiant &ndash;&gt;-->
+<!--    <aside class="w-72 bg-univ-navy text-white flex flex-col justify-between shadow-2xl z-30 flex-shrink-0 border-r border-univ-gold/20">-->
+<!--        <div>-->
+<!--            <div class="p-6 border-b border-white/10 flex flex-col items-center">-->
+<!--                <div class="flex items-center space-x-3">-->
+<!--                    <svg class="w-10 h-10 text-univ-gold" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+<!--                        <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4"/>-->
+<!--                        <path d="M25 65 C20 50,25 35,35 25" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>-->
+<!--                        <path d="M75 65 C80 50,75 35,65 25" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>-->
+<!--                        <path d="M35 60 L50 65 L65 60 L65 45 L50 50 L35 45 Z" fill="currentColor" opacity="0.8"/>-->
+<!--                        <path d="M48 75 L52 75 L53 52 L47 52 Z" fill="#fff"/>-->
+<!--                        <path d="M45 48 C48 40,52 40,55 48 C51 44,49 44,45 48 Z" fill="url(#torch-flame)"/>-->
+<!--                        <defs><linearGradient id="torch-flame" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#bfa15f"/><stop offset="100%" stop-color="#fff"/></linearGradient></defs>-->
+<!--                    </svg>-->
+<!--                    <div class="leading-tight">-->
+<!--                        <span class="block font-bold text-xs tracking-wider uppercase">Université de</span>-->
+<!--                        <span class="block font-serif text-lg font-light tracking-wide text-univ-gold">l'Excellence</span>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="mt-2 text-[9px] text-univ-gold/60 uppercase tracking-widest font-semibold">Portail Étudiant</div>-->
+<!--            </div>-->
+<!--            <nav class="mt-6 px-4 space-y-1">-->
+<!--                <a href="#" onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl bg-univ-gold text-univ-navy font-semibold transition duration-200 shadow-md">-->
+<!--                    <i class="fa-solid fa-chart-pie w-5 text-center text-lg"></i><span>Tableau de bord</span>-->
+<!--                </a>-->
+<!--                <a href="#" onclick="switchTab('mes-demandes')" id="nav-mes-demandes" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-white/5 hover:text-white transition duration-200">-->
+<!--                    <i class="fa-solid fa-file-signature w-5 text-center text-lg"></i><span>Mes demandes</span>-->
+<!--                </a>-->
+<!--                <a href="#" onclick="switchTab('cours')" id="nav-cours" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-white/5 hover:text-white transition duration-200">-->
+<!--                    <i class="fa-solid fa-book-open w-5 text-center text-lg"></i><span>Mes cours</span>-->
+<!--                </a>-->
+<!--                <a href="#" onclick="switchTab('profil')" id="nav-profil" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-white/5 hover:text-white transition duration-200">-->
+<!--                    <i class="fa-solid fa-user-circle w-5 text-center text-lg"></i><span>Mon profil</span>-->
+<!--                </a>-->
+<!--            </nav>-->
+<!--        </div>-->
+<!--        <div class="p-4 border-t border-white/10">-->
+<!--            <a th:href="@{/auth/logout}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-rose-300 hover:bg-rose-500/10 hover:text-rose-100 transition duration-200 font-medium">-->
+<!--                <i class="fa-solid fa-power-off w-5 text-center text-lg"></i><span>Déconnexion</span>-->
+<!--            </a>-->
+<!--        </div>-->
+<!--    </aside>-->
+
+<!--    <div class="flex-grow flex flex-col overflow-hidden">-->
+<!--        <header class="h-20 bg-white/80 backdrop-blur-sm border-b border-slate-200 flex items-center justify-between px-8 z-20 shadow-sm">-->
+<!--            <div class="flex items-center space-x-2">-->
+<!--                <h1 id="page-title" class="text-2xl font-bold text-univ-navy">Tableau de bord</h1>-->
+<!--                <span class="text-slate-400">/</span>-->
+<!--                <span id="breadcrumb" class="text-slate-500 font-medium text-sm">Vue d'ensemble</span>-->
+<!--            </div>-->
+<!--            <div class="flex items-center space-x-3">-->
+<!--                <div class="text-right hidden sm:block">-->
+<!--                    <span class="block text-sm font-bold text-univ-navy" th:text="${user != null and user.profil != null ? user.profil.nom + ' ' + user.profil.prenom : user.login}">Étudiant</span>-->
+<!--                    <span class="block text-[11px] text-slate-500 font-medium">Licence 3 Informatique</span>-->
+<!--                </div>-->
+<!--                <img class="w-10 h-10 rounded-full border-2 border-univ-gold object-cover shadow-sm" src="https://ui-avatars.com/api/?background=133054&color=bfa15f&bold=true&name=Student" alt="Avatar">-->
+<!--            </div>-->
+<!--        </header>-->
+
+<!--        <main class="flex-grow p-8 overflow-y-auto custom-scrollbar">-->
+<!--            <div id="tab-dashboard" class="tab-content">-->
+<!--                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">-->
+<!--                    <div class="content-card p-6"><i class="fa-solid fa-graduation-cap text-3xl text-univ-gold"></i><h3 class="text-lg font-bold mt-2">Moyenne générale</h3><p class="text-3xl font-bold" th:text="${moyenneGenerale != null ? moyenneGenerale : 14.2}">14.2</p><span class="text-xs text-slate-500">/20</span></div>-->
+<!--                    <div class="content-card p-6"><i class="fa-solid fa-credit-card text-3xl text-univ-gold"></i><h3 class="text-lg font-bold mt-2">Crédits ECTS</h3><p class="text-3xl font-bold" th:text="${creditsEcts != null ? creditsEcts : 47}">47</p><span class="text-xs text-slate-500">/ 60</span></div>-->
+<!--                    <div class="content-card p-6"><i class="fa-solid fa-file-alt text-3xl text-univ-gold"></i><h3 class="text-lg font-bold mt-2">Demandes actives</h3><p class="text-3xl font-bold" th:text="${demandesActives != null ? demandesActives : 1}">1</p></div>-->
+<!--                </div>-->
+<!--                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">-->
+<!--                    <div class="content-card p-6"><h3 class="text-lg font-bold text-univ-navy mb-4">Évolution de la moyenne</h3><canvas id="moyenneEvolution" width="400" height="200"></canvas></div>-->
+<!--                    <div class="content-card p-6"><h3 class="text-lg font-bold text-univ-navy mb-4">Répartition des crédits</h3><canvas id="creditsRepartition" width="400" height="200"></canvas></div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div id="tab-mes-demandes" class="hidden tab-content"><div class="content-card p-6"><h2 class="text-2xl font-bold text-univ-navy">Mes demandes de transfert</h2><p class="text-slate-500">Historique et suivi...</p></div></div>-->
+<!--            <div id="tab-cours" class="hidden tab-content"><div class="content-card p-6"><h2 class="text-2xl font-bold text-univ-navy">Mes cours</h2><p class="text-slate-500">Emploi du temps et notes...</p></div></div>-->
+<!--            <div id="tab-profil" class="hidden tab-content"><div class="content-card p-6"><h2 class="text-2xl font-bold text-univ-navy">Mon profil étudiant</h2><p class="text-slate-500">Informations personnelles...</p></div></div>-->
+<!--        </main>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    function switchTab(tabId) {-->
+<!--        document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));-->
+<!--        document.getElementById('tab-' + tabId).classList.remove('hidden');-->
+<!--        const titles = { dashboard: 'Tableau de bord', 'mes-demandes': 'Mes demandes', cours: 'Mes cours', profil: 'Mon profil' };-->
+<!--        const breadcrumbs = { dashboard: 'Indicateurs', 'mes-demandes': 'Suivi des demandes', cours: 'Emploi du temps', profil: 'Mes informations' };-->
+<!--        document.getElementById('page-title').innerText = titles[tabId];-->
+<!--        document.getElementById('breadcrumb').innerText = breadcrumbs[tabId];-->
+<!--        document.querySelectorAll('.nav-item').forEach(item => item.className = "nav-item flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-white/5 hover:text-white transition duration-200");-->
+<!--        document.getElementById('nav-' + tabId).className = "nav-item flex items-center space-x-3 px-4 py-3 rounded-xl bg-univ-gold text-univ-navy font-semibold transition duration-200 shadow-md";-->
+<!--    }-->
+
+<!--    document.addEventListener('DOMContentLoaded', function() {-->
+<!--        new Chart(document.getElementById('moyenneEvolution'), {-->
+<!--            type: 'line',-->
+<!--            data: { labels: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6'], datasets: [{ label: 'Moyenne', data: [12.5, 13.2, 14.0, 13.8, 14.5, 14.2], borderColor: '#bfa15f', tension: 0.3, fill: false }] },-->
+<!--            options: { responsive: true }-->
+<!--        });-->
+<!--        new Chart(document.getElementById('creditsRepartition'), {-->
+<!--            type: 'doughnut',-->
+<!--            data: { labels: ['Validés', 'Restants'], datasets: [{ data: [47, 13], backgroundColor: ['#133054', '#bfa15f'] }] },-->
+<!--            options: { responsive: true }-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -43,7 +193,7 @@
 <body class="bg-campus-blur min-h-screen">
 
 <div class="flex h-screen overflow-hidden">
-    <!-- Sidebar étudiant -->
+    <!-- Sidebar Étudiant -->
     <aside class="w-72 bg-univ-navy text-white flex flex-col justify-between shadow-2xl z-30 flex-shrink-0 border-r border-univ-gold/20">
         <div>
             <div class="p-6 border-b border-white/10 flex flex-col items-center">
@@ -65,7 +215,7 @@
                 <div class="mt-2 text-[9px] text-univ-gold/60 uppercase tracking-widest font-semibold">Portail Étudiant</div>
             </div>
             <nav class="mt-6 px-4 space-y-1">
-                <a href="#" onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl bg-univ-gold text-univ-navy font-semibold transition duration-200 shadow-md">
+                <a href="#" onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl bg-univ-gold text-univ-navy font-semibold shadow-md">
                     <i class="fa-solid fa-chart-pie w-5 text-center text-lg"></i><span>Tableau de bord</span>
                 </a>
                 <a href="#" onclick="switchTab('mes-demandes')" id="nav-mes-demandes" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-white/5 hover:text-white transition duration-200">
@@ -103,20 +253,70 @@
         </header>
 
         <main class="flex-grow p-8 overflow-y-auto custom-scrollbar">
+            <!-- Onglet Tableau de bord -->
             <div id="tab-dashboard" class="tab-content">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="content-card p-6"><i class="fa-solid fa-graduation-cap text-3xl text-univ-gold"></i><h3 class="text-lg font-bold mt-2">Moyenne générale</h3><p class="text-3xl font-bold" th:text="${moyenneGenerale != null ? moyenneGenerale : 14.2}">14.2</p><span class="text-xs text-slate-500">/20</span></div>
-                    <div class="content-card p-6"><i class="fa-solid fa-credit-card text-3xl text-univ-gold"></i><h3 class="text-lg font-bold mt-2">Crédits ECTS</h3><p class="text-3xl font-bold" th:text="${creditsEcts != null ? creditsEcts : 47}">47</p><span class="text-xs text-slate-500">/ 60</span></div>
-                    <div class="content-card p-6"><i class="fa-solid fa-file-alt text-3xl text-univ-gold"></i><h3 class="text-lg font-bold mt-2">Demandes actives</h3><p class="text-3xl font-bold" th:text="${demandesActives != null ? demandesActives : 1}">1</p></div>
+                    <div class="content-card p-6">
+                        <i class="fa-solid fa-graduation-cap text-3xl text-univ-gold"></i>
+                        <h3 class="text-lg font-bold mt-2">Moyenne générale</h3>
+                        <p class="text-3xl font-bold" th:text="${moyenneGenerale != null ? moyenneGenerale : '14.2'}">14.2</p>
+                        <span class="text-xs text-slate-500">/20</span>
+                    </div>
+                    <div class="content-card p-6">
+                        <i class="fa-solid fa-credit-card text-3xl text-univ-gold"></i>
+                        <h3 class="text-lg font-bold mt-2">Crédits ECTS</h3>
+                        <p class="text-3xl font-bold" th:text="${creditsEcts != null ? creditsEcts : '47'}">47</p>
+                        <span class="text-xs text-slate-500">/ 180</span>
+                    </div>
+                    <div class="content-card p-6">
+                        <i class="fa-solid fa-file-alt text-3xl text-univ-gold"></i>
+                        <h3 class="text-lg font-bold mt-2">Demandes actives</h3>
+                        <p class="text-3xl font-bold" th:text="${demandesActives != null ? demandesActives : '0'}">0</p>
+                    </div>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="content-card p-6"><h3 class="text-lg font-bold text-univ-navy mb-4">Évolution de la moyenne</h3><canvas id="moyenneEvolution" width="400" height="200"></canvas></div>
-                    <div class="content-card p-6"><h3 class="text-lg font-bold text-univ-navy mb-4">Répartition des crédits</h3><canvas id="creditsRepartition" width="400" height="200"></canvas></div>
+                    <div class="content-card p-6">
+                        <h3 class="text-lg font-bold text-univ-navy mb-4">Évolution de la moyenne</h3>
+                        <canvas id="moyenneEvolution" width="400" height="200"></canvas>
+                    </div>
+                    <div class="content-card p-6">
+                        <h3 class="text-lg font-bold text-univ-navy mb-4">Répartition des crédits</h3>
+                        <canvas id="creditsRepartition" width="400" height="200"></canvas>
+                    </div>
                 </div>
             </div>
-            <div id="tab-mes-demandes" class="hidden tab-content"><div class="content-card p-6"><h2 class="text-2xl font-bold text-univ-navy">Mes demandes de transfert</h2><p class="text-slate-500">Historique et suivi...</p></div></div>
-            <div id="tab-cours" class="hidden tab-content"><div class="content-card p-6"><h2 class="text-2xl font-bold text-univ-navy">Mes cours</h2><p class="text-slate-500">Emploi du temps et notes...</p></div></div>
-            <div id="tab-profil" class="hidden tab-content"><div class="content-card p-6"><h2 class="text-2xl font-bold text-univ-navy">Mon profil étudiant</h2><p class="text-slate-500">Informations personnelles...</p></div></div>
+
+            <!-- Onglet Mes demandes (Module 3) -->
+            <div id="tab-mes-demandes" class="hidden tab-content">
+                <div class="content-card p-6">
+                    <h2 class="text-2xl font-bold text-univ-navy">Mes demandes de transfert</h2>
+                    <p class="text-slate-500">Historique et suivi...</p>
+                    <!-- Le contenu viendra du Module 3 -->
+                </div>
+            </div>
+
+            <!-- Onglet Mes cours (Module 2) -->
+            <div id="tab-cours" class="hidden tab-content">
+                <div class="content-card p-6">
+                    <h2 class="text-2xl font-bold text-univ-navy">Mes cours</h2>
+                    <p class="text-slate-500">Emploi du temps et notes...</p>
+                </div>
+            </div>
+
+            <!-- Onglet Mon profil (Module 1 & 2) -->
+            <div id="tab-profil" class="hidden tab-content">
+                <div class="content-card p-6">
+                    <h2 class="text-2xl font-bold text-univ-navy">Mon profil étudiant</h2>
+                    <div class="space-y-2 mt-4">
+                        <p><strong>Nom :</strong> <span th:text="${user != null and user.profil != null ? user.profil.nom : ''}"></span></p>
+                        <p><strong>Prénom :</strong> <span th:text="${user != null and user.profil != null ? user.profil.prenom : ''}"></span></p>
+                        <p><strong>Email :</strong> <span th:text="${user != null and user.profil != null ? user.profil.email : ''}"></span></p>
+                        <p><strong>Téléphone :</strong> <span th:text="${user != null and user.profil != null ? user.profil.telephone : ''}"></span></p>
+                        <p><strong>Matricule national :</strong> <span th:text="${user != null and user.profil != null ? user.profil.matriculeNational : ''}"></span></p>
+                    </div>
+                    <a th:href="@{/profile/edit}" class="mt-4 inline-block bg-univ-gold text-univ-navy px-4 py-2 rounded">Modifier mon profil</a>
+                </div>
+            </div>
         </main>
     </div>
 </div>
@@ -125,23 +325,50 @@
     function switchTab(tabId) {
         document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
         document.getElementById('tab-' + tabId).classList.remove('hidden');
-        const titles = { dashboard: 'Tableau de bord', 'mes-demandes': 'Mes demandes', cours: 'Mes cours', profil: 'Mon profil' };
-        const breadcrumbs = { dashboard: 'Indicateurs', 'mes-demandes': 'Suivi des demandes', cours: 'Emploi du temps', profil: 'Mes informations' };
+        const titles = {
+            dashboard: 'Tableau de bord',
+            'mes-demandes': 'Mes demandes',
+            cours: 'Mes cours',
+            profil: 'Mon profil'
+        };
+        const breadcrumbs = {
+            dashboard: 'Indicateurs',
+            'mes-demandes': 'Suivi des demandes',
+            cours: 'Emploi du temps',
+            profil: 'Mes informations'
+        };
         document.getElementById('page-title').innerText = titles[tabId];
         document.getElementById('breadcrumb').innerText = breadcrumbs[tabId];
-        document.querySelectorAll('.nav-item').forEach(item => item.className = "nav-item flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-white/5 hover:text-white transition duration-200");
-        document.getElementById('nav-' + tabId).className = "nav-item flex items-center space-x-3 px-4 py-3 rounded-xl bg-univ-gold text-univ-navy font-semibold transition duration-200 shadow-md";
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.className = "nav-item flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-white/5 hover:text-white transition duration-200";
+        });
+        document.getElementById('nav-' + tabId).className += " bg-univ-gold text-univ-navy font-semibold shadow-md";
     }
 
     document.addEventListener('DOMContentLoaded', function() {
         new Chart(document.getElementById('moyenneEvolution'), {
             type: 'line',
-            data: { labels: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6'], datasets: [{ label: 'Moyenne', data: [12.5, 13.2, 14.0, 13.8, 14.5, 14.2], borderColor: '#bfa15f', tension: 0.3, fill: false }] },
+            data: {
+                labels: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6'],
+                datasets: [{
+                    label: 'Moyenne',
+                    data: [12.5, 13.2, 14.0, 13.8, 14.5, 14.2],
+                    borderColor: '#bfa15f',
+                    tension: 0.3,
+                    fill: false
+                }]
+            },
             options: { responsive: true }
         });
         new Chart(document.getElementById('creditsRepartition'), {
             type: 'doughnut',
-            data: { labels: ['Validés', 'Restants'], datasets: [{ data: [47, 13], backgroundColor: ['#133054', '#bfa15f'] }] },
+            data: {
+                labels: ['Validés', 'Restants'],
+                datasets: [{
+                    data: [47, 13],
+                    backgroundColor: ['#133054', '#bfa15f']
+                }]
+            },
             options: { responsive: true }
         });
     });

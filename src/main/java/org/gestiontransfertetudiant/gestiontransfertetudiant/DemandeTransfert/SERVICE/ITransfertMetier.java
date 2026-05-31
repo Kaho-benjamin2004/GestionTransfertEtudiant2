@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ITransfertMetier {
+    long getDemandesActivesByEtudiant(UUID etudiantId) throws ResourceNotFoundException;
     List<TransfertExportDTO> getTransfertsForExport(LocalDate dateDebut, LocalDate dateFin, String statut);
     long getTotalTransferts();
     long getTransfertsByStatut(String statut);

@@ -11,13 +11,16 @@ import java.util.List;
 import java.util.UUID;
 
 public interface UtilisateurRoleRepository extends JpaRepository<UtilisateurRole, UtilisateurRoleId> {
+    @Query("SELECT e FROM Etudiant e WHERE e.utilisateur.utilisateurId= :utilisateurId")
     List<UtilisateurRole> findByUtilisateurId(UUID utilisateurId);
    
 
-    @Query("SELECT ur.role.nom FROM UtilisateurRole ur WHERE ur.utilisateur.id = :utilisateurId")
+    @Query("SELECT ur.role.nom FROM UtilisateurRole ur WHERE ur.utilisateur.utilisateurId= :utilisateurId")
     List<String> findRoleNomsByUtilisateurId(@Param("utilisateurId") UUID utilisateurId);
+
 
     @Modifying
     @Transactional
+    @Query("DELETE FROM UtilisateurRole ur WHERE ur.utilisateur.id = :utilisateurId AND ur.role.id = :roleId")
     void deleteByUtilisateurIdAndRoleId(UUID utilisateurId, UUID roleId);
 }

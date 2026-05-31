@@ -14,7 +14,9 @@ import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionEtudiant.DAO
 import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionEtudiant.DAO.repository.*;
 import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionUtilisateur.DAO.dto.request.ProfilRequestDTO;
 import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionUtilisateur.DAO.entity.Profil;
+import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionUtilisateur.DAO.entity.Utilisateur;
 import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionUtilisateur.DAO.repository.ProfilRepository;
+import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionUtilisateur.DAO.repository.UtilisateurRepository;
 import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionUtilisateur.SERVICE.execption.BusinessException;
 import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionUtilisateur.SERVICE.execption.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -37,6 +40,7 @@ public class EtudiantMetierImpl implements IEtudiantMetier {
     private final ParcoursAcademiqueRepository parcoursRepository;
     private final UniteEnseignementRepository ueRepository;
     private final NoteRepository noteRepository;
+    private  final UtilisateurRepository utilisateurRepository;
     private final CreditRepository creditRepository;
     private final SanctionRepository sanctionRepository;
     private final EtablissementAnterieurRepository etabAnterieurRepository;
@@ -44,6 +48,35 @@ public class EtudiantMetierImpl implements IEtudiantMetier {
     private final CalculMoyenneStrategy calculMoyenneStrategy;
 
     // ========== Cas d'utilisation Étudiant ==========
+
+
+    @Override
+    public EtudiantResponseDTO creerEtudiantPourUtilisateur(UUID utilisateurId, String numeroEtudiant) throws BusinessException {
+        Utilisateur utilisateur = utilisateurRepository.findByUtilisateurId(utilisateurId);
+//                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur", utilisateurId));
+        if (etudiantRepository.findByUtilisateurId(utilisateurId).isPresent()) {
+            throw new BusinessException("Un étudiant est déjà associé à cet utilisateur", "DUPLICATE");
+        }
+        Etudiant etudiant = new Etudiant();
+        etudiant.setUtilisateur(utilisateur);
+        etudiant.setNumeroEtudiant(numeroEtudiant != null ? numeroEtudiant : "ETU" + System.currentTimeMillis());
+        etudiant.setDateInscription(LocalDate.now());
+        etudiant = etudiantRepository.save(etudiant);
+        return EtudiantMapper.toDTO(etudiant);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public int getTotalCreditsAcquis(UUID etudiantId) throws ResourceNotFoundException {
+        if (!etudiantRepository.existsById(etudiantId)) {
+            throw new ResourceNotFoundException("Étudiant", etudiantId);
+        }
+        List<Credit> credits = creditRepository.findByEtudiantId(etudiantId);
+        return credits.stream()
+                .filter(c -> "Acquis".equals(c.getStatut()))
+                .mapToInt(Credit::getNombre)
+                .sum();
+    }
 
     @Override
     @Transactional(readOnly = true)

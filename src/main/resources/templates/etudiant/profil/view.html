@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Mon profil</title>...</head>
+<body>
+<div class="flex h-screen overflow-hidden">
+  <aside>...</aside>
+  <div class="flex-grow flex flex-col overflow-hidden">
+    <header>...</header>
+    <main class="flex-grow p-8">
+      <div class="content-card p-6 max-w-2xl mx-auto">
+        <h2 class="text-xl font-bold mb-4">Mes informations</h2>
+        <div class="space-y-2">
+          <p><strong>Nom :</strong> <span th:text="${etudiant.nom}">-</span></p>
+          <p><strong>Prénom :</strong> <span th:text="${etudiant.prenom}">-</span></p>
+          <p><strong>Email :</strong> <span th:text="${etudiant.email}">-</span></p>
+          <p><strong>Téléphone :</strong> <span th:text="${etudiant.telephone}">-</span></p>
+          <p><strong>Matricule national :</strong> <span th:text="${etudiant.matriculeNational}">-</span></p>
+          <p><strong>Numéro étudiant :</strong> <span th:text="${etudiant.numeroEtudiant}">-</span></p>
+          <p><strong>Date inscription :</strong> <span th:text="${#dates.format(etudiant.dateInscription, 'dd/MM/yyyy')}">-</span></p>
+          <p><strong>Parcours actuel :</strong> <span th:text="${etudiant.parcoursActuel}">-</span></p>
+          <p><strong>Niveau :</strong> <span th:text="${etudiant.niveau}">-</span></p>
+        </div>
+        <div class="mt-6 flex justify-end"><a th:href="@{/etudiant/profil/edit}" class="bg-univ-gold text-univ-navy px-4 py-2 rounded">Modifier</a></div>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

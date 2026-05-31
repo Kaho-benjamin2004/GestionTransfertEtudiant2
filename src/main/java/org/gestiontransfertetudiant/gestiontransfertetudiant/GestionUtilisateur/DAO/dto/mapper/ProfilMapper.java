@@ -17,7 +17,7 @@ public class ProfilMapper {
                 .telephone(profil.getTelephone())
                 .matriculeNational(profil.getMatriculeNational())
                 .fonction(profil.getFonction())
-                .utilisateurId(profil.getUtilisateur() != null ? profil.getUtilisateur().getId() : null)
+                .utilisateurId(profil.getUtilisateur() != null ? profil.getUtilisateur().getUtilisateurId(): null)
                 .build();
     }
 

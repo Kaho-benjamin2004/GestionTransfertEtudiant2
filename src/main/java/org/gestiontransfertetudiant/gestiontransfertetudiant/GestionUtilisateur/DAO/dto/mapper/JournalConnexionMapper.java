@@ -13,7 +13,7 @@ public class JournalConnexionMapper {
                 .succes(journal.getSucces())
                 .adresseIP(journal.getAdresseIP())
                 .raisonEchec(journal.getRaisonEchec())
-                .utilisateurId(journal.getUtilisateur() != null ? journal.getUtilisateur().getId() : null)
+                .utilisateurId(journal.getUtilisateur() != null ? journal.getUtilisateur().getUtilisateurId() : null)
                 .build();
     }
 

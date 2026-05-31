@@ -3,7 +3,6 @@ package org.gestiontransfertetudiant.gestiontransfertetudiant.ValidationDocument
 import org.gestiontransfertetudiant.gestiontransfertetudiant.ValidationDocument.DAO.dto.request.ValidationRequestDTO;
 import org.gestiontransfertetudiant.gestiontransfertetudiant.ValidationDocument.DAO.dto.response.ValidationResponseDTO;
 import org.gestiontransfertetudiant.gestiontransfertetudiant.ValidationDocument.DAO.entity.Validation;
-import org.gestiontransfertetudiant.gestiontransfertetudiant.ValidationDocument.DAO.entity.Workflow;
 
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
@@ -29,11 +28,12 @@ public class ValidationMapper {
                 .build();
     }
 
-    public static Validation toEntity(ValidationRequestDTO requestDTO, Workflow workflow) {
+    public static Validation toEntity(ValidationRequestDTO requestDTO, Validation workflow) {
         if (requestDTO == null) return null;
         Validation validation = new Validation();
         validation.setEntiteId(requestDTO.getEntiteId());
         validation.setEntiteType(requestDTO.getEntiteType());
+        validation.setNom(requestDTO.getNom());
         validation.setEtape(1); // première étape
         validation.setStatut("EN_ATTENTE");
         validation.setDateSoumission(LocalDateTime.now());

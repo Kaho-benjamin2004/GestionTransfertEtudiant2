@@ -12,7 +12,8 @@ import java.util.UUID;
 
 public interface EtudiantRepository extends JpaRepository<Etudiant, UUID> {
 
-    Optional<Etudiant> findByUtilisateurId(UUID utilisateurId);
+    @Query("SELECT e FROM Etudiant e WHERE e.utilisateur.utilisateurId= :utilisateurId")
+    Optional<Etudiant> findByUtilisateurId(@Param("utilisateurId") UUID utilisateurId);
 
     Optional<Etudiant> findByNumeroEtudiant(String numeroEtudiant);
 

@@ -18,12 +18,17 @@ import java.util.List;
 import java.util.UUID;
 
 public interface IEtudiantMetier {
+    // IEtudiantMetier.java (Module 2)
+    EtudiantResponseDTO creerEtudiantPourUtilisateur(UUID utilisateurId, String numeroEtudiant) throws BusinessException;
 
     // ========== Cas d'utilisation Étudiant ==========
 
     /**
      * Consulter l'historique académique d'un étudiant (notes, parcours, crédits).
+     *
+
      */
+    int getTotalCreditsAcquis(UUID etudiantId) throws ResourceNotFoundException;
     EtudiantResponseDTO consulterHistorique(UUID etudiantId) throws ResourceNotFoundException;
 
     /**

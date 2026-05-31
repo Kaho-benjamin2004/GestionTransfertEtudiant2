@@ -21,7 +21,7 @@ public class Utilisateur {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private UUID utilisateurId;
 
     @Column(nullable = false, unique = true, length = 50)
     private String login;
@@ -55,4 +55,6 @@ public class Utilisateur {
 
     @OneToMany(mappedBy = "utilisateur", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<JournalConnexion> journauxConnexion = new HashSet<>();
+
+
 }

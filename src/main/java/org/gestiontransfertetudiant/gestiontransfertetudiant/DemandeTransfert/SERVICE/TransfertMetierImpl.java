@@ -90,7 +90,16 @@ public class TransfertMetierImpl implements ITransfertMetier {
 //    }
 
 
-//    private String extraireUniversiteOrigine(DemandeTransfert demande) {
+    @Override
+    @Transactional(readOnly = true)
+    public long getDemandesActivesByEtudiant(UUID etudiantId) throws ResourceNotFoundException {
+        if (!etudiantRepository.existsById(etudiantId)) {
+            throw new ResourceNotFoundException("Étudiant", etudiantId);
+        }
+        return demandeRepository.countByEtudiantIdAndStatutNotIn(etudiantId, List.of("ACCEPTEE", "REFUSEE", "ANNULEE"));
+    }
+
+    //    private String extraireUniversiteOrigine(DemandeTransfert demande) {
 //        // À adapter selon votre logique métier (ex: depuis l'établissement de l'étudiant)
 //        return "Université d'origine (non renseignée)";
 //    }
@@ -135,7 +144,7 @@ public List<TransfertExportDTO> getTransfertsForExport(LocalDate dateDebut, Loca
 
         DemandeTransfert demande = DemandeTransfertMapper.toEntity(request, etudiant);
         demande = demandeRepository.save(demande);
-        ajouterAudit(demande.getId(), "CREATION", "Demande créée par l'étudiant", etudiant.getUtilisateur().getId());
+        ajouterAudit(demande.getId(), "CREATION", "Demande créée par l'étudiant", etudiant.getUtilisateur().getUtilisateurId());
         return DemandeTransfertMapper.toDTO(demande);
     }
 

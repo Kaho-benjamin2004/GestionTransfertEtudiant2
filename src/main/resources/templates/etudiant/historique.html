@@ -1,27 +1,65 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head"></head>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon historique - Université de l'Excellence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans&display=swap" rel="stylesheet">
+    <script>tailwind.config = { theme: { extend: { colors: { univ: { navy: '#133054', gold: '#bfa15f' } } } } }</script>
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; } .bg-campus-blur { background-image: linear-gradient(rgba(19,48,84,0.4), rgba(15,23,42,0.45)), url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1470&auto=format&fit=crop'); background-size: cover; background-attachment: fixed; } .content-card { background: rgba(255,255,255,0.95); backdrop-filter: blur(2px); border-radius: 1.5rem; }</style>
+</head>
 <body class="bg-campus-blur min-h-screen">
 <div class="flex h-screen overflow-hidden">
-    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <!-- Sidebar étudiant (identique à dashboard/student.html) -->
+    <aside class="w-72 bg-univ-navy text-white flex flex-col justify-between shadow-2xl z-30 flex-shrink-0 border-r border-univ-gold/20">
+        <div>
+            <div class="p-6 border-b border-white/10 flex flex-col items-center">
+                <div class="flex items-center space-x-3">
+                    <svg class="w-10 h-10 text-univ-gold" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4"/><path d="M25 65 C20 50,25 35,35 25" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M75 65 C80 50,75 35,65 25" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M35 60 L50 65 L65 60 L65 45 L50 50 L35 45 Z" fill="currentColor" opacity="0.8"/><path d="M48 75 L52 75 L53 52 L47 52 Z" fill="#fff"/><path d="M45 48 C48 40,52 40,55 48 C51 44,49 44,45 48 Z" fill="url(#torch-flame)"/><defs><linearGradient id="torch-flame" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#bfa15f"/><stop offset="100%" stop-color="#fff"/></linearGradient></defs></svg>
+                    <div class="leading-tight"><span class="block font-bold text-xs">Université de</span><span class="block font-serif text-lg text-univ-gold">l'Excellence</span></div>
+                </div>
+                <div class="mt-2 text-[9px] text-univ-gold/60 uppercase">Portail Étudiant</div>
+            </div>
+            <nav class="mt-6 px-4 space-y-1">
+                <a th:href="@{/dashboard}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-white/5 transition"><i class="fa-solid fa-chart-pie w-5"></i><span>Tableau de bord</span></a>
+                <a th:href="@{/etudiant/historique}" class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-univ-gold text-univ-navy font-semibold shadow-md"><i class="fa-solid fa-history w-5"></i><span>Mon historique</span></a>
+                <a th:href="@{/etudiant/credits}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-white/5 transition"><i class="fa-solid fa-graduation-cap w-5"></i><span>Mes crédits</span></a>
+                <a th:href="@{/etudiant/sanctions}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-white/5 transition"><i class="fa-solid fa-exclamation-triangle w-5"></i><span>Mes sanctions</span></a>
+                <a th:href="@{/etudiant/profil/view}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-white/5 transition"><i class="fa-solid fa-user-circle w-5"></i><span>Mon profil</span></a>
+            </nav>
+        </div>
+        <div class="p-4 border-t border-white/10"><a th:href="@{/auth/logout}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-rose-300 hover:bg-rose-500/10 transition"><i class="fa-solid fa-power-off w-5"></i><span>Déconnexion</span></a></div>
+    </aside>
+
+    <!-- Main content -->
     <div class="flex-grow flex flex-col overflow-hidden">
-        <div th:replace="fragments/header :: header"></div>
-        <main class="flex-grow p-8 overflow-y-auto custom-scrollbar">
+        <header class="h-20 bg-white/80 backdrop-blur-sm border-b border-slate-200 flex items-center justify-between px-8">
+            <div><h1 class="text-2xl font-bold text-univ-navy">Mon historique académique</h1></div>
+            <div class="flex items-center space-x-3"><div class="text-right"><span class="block text-sm font-bold text-univ-navy" th:text="${etudiant.nom + ' ' + etudiant.prenom}">Étudiant</span><span class="block text-[11px] text-slate-500">N° <span th:text="${etudiant.numeroEtudiant}">123456</span></span></div><img src="https://ui-avatars.com/api/?background=133054&color=bfa15f&bold=true&name=Student" class="w-10 h-10 rounded-full border-2 border-univ-gold"></div>
+        </header>
+        <main class="flex-grow p-8 overflow-y-auto">
             <div class="content-card p-6">
-                <h2 class="text-xl font-bold text-univ-navy mb-4">Historique académique</h2>
-                <div th:each="parcours : ${etudiant.parcoursAcademiques}" class="mb-6">
-                    <h3 class="font-bold">Année universitaire : <span th:text="${parcours.anneeUniversitaire}"></span></h3>
-                    <p>Moyenne : <span th:text="${parcours.moyenne}"></span> | Statut : <span th:text="${parcours.statut}"></span></p>
-                    <table class="min-w-full border">
-                        <thead class="bg-univ-navy text-white"><tr><th>UE</th><th>Note</th><th>Crédits</th></tr></thead>
+                <div th:each="parcours : ${etudiant.parcoursAcademiques}" class="mb-8">
+                    <div class="bg-univ-navy/10 p-4 rounded-xl">
+                        <h3 class="text-xl font-bold text-univ-navy" th:text="${parcours.anneeUniversitaire}">Année</h3>
+                        <p><strong>Moyenne :</strong> <span th:text="${parcours.moyenne}">-</span> /20</p>
+                        <p><strong>Statut :</strong> <span th:text="${parcours.statut}">-</span></p>
+                    </div>
+                    <table class="min-w-full mt-4 border">
+                        <thead class="bg-univ-navy text-white"><tr><th>UE</th><th>Crédits</th><th>Coefficient</th><th>Note</th></tr></thead>
                         <tbody>
                         <tr th:each="note : ${parcours.notes}">
-                            <td th:text="${note.uniteEnseignement.intitule}"></td>
-                            <td th:text="${note.valeur}"></td>
-                            <td th:text="${note.uniteEnseignement.credits}"></td>
+                            <td th:text="${note.uniteEnseignement.intitule}">-</td>
+                            <td th:text="${note.uniteEnseignement.credits}">0</td>
+                            <td th:text="${note.uniteEnseignement.coefficient}">0</td>
+                            <td th:text="${note.valeur}">0.00</td>
                         </tr>
                         </tbody>
                     </table>
+                </div>
+                <div th:if="${etudiant.parcoursAcademiques == null or etudiant.parcoursAcademiques.empty}">
+                    <p class="text-slate-500">Aucun parcours enregistré.</p>
                 </div>
             </div>
         </main>

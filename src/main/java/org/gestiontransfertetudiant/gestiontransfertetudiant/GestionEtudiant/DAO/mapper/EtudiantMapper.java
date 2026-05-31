@@ -16,7 +16,7 @@ public class EtudiantMapper {
                 .dateInscription(etudiant.getDateInscription())
                 .parcoursActuel(etudiant.getParcoursActuel())
                 .niveau(etudiant.getNiveau())
-                .utilisateurId(etudiant.getUtilisateur() != null ? etudiant.getUtilisateur().getId() : null)
+                .utilisateurId(etudiant.getUtilisateur() != null ? etudiant.getUtilisateur().getUtilisateurId() : null)
                 .nom(etudiant.getUtilisateur() != null && etudiant.getUtilisateur().getProfil() != null ?
                         etudiant.getUtilisateur().getProfil().getNom() : null)
                 .prenom(etudiant.getUtilisateur() != null && etudiant.getUtilisateur().getProfil() != null ?

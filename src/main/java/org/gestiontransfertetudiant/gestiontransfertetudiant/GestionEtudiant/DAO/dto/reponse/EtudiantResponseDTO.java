@@ -17,8 +17,11 @@ public class EtudiantResponseDTO {
     private UUID utilisateurId;
     private String nom;    // dénormalisé depuis le profil
     private String prenom;
+    private String Telephone;
+    private String MatriculeNational;
     private String email;
     private List<ParcoursAcademiqueResponseDTO> parcoursAcademiques;
     private List<SanctionResponseDTO> sanctions;
     private List<EtablissementAnterieurResponseDTO> etablissementsAnterieurs;
+
 }

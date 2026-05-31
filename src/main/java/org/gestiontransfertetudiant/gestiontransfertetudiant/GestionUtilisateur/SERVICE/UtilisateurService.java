@@ -2,6 +2,8 @@ package org.gestiontransfertetudiant.gestiontransfertetudiant.GestionUtilisateur
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionEtudiant.SERVICE.IEtudiantMetier;
 import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionUtilisateur.DAO.dto.mapper.RoleMapper;
 import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionUtilisateur.DAO.dto.mapper.UtilisateurMapper;
 import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionUtilisateur.DAO.dto.request.ProfilRequestDTO;
@@ -17,6 +19,7 @@ import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionUtilisateur.
 import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionUtilisateur.DAO.repository.UtilisateurRoleRepository;
 import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionUtilisateur.SERVICE.execption.AlreadyExistsException;
 import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionUtilisateur.SERVICE.execption.ResourceNotFoundException;
+import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,11 +30,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UtilisateurService {
     private  final  AuthService authService;
+    @Lazy
+    private final IEtudiantMetier etudiantMetier;
     private final UtilisateurRepository utilisateurRepository;
     private final ProfilRepository profilRepository;
     private final RoleRepository roleRepository;
@@ -62,48 +67,106 @@ public class UtilisateurService {
     }
    
 
-    @Transactional
-    public void createUser(UtilisateurRequestDTO request) {
-        if (utilisateurRepository.existsByLogin(request.getLogin())) {
-            throw new AlreadyExistsException("Login déjà utilisé");
-        }
-        if (profilRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new AlreadyExistsException("Email déjà utilisé");
-        }
-
-        // Création de l'utilisateur
-        Utilisateur utilisateur = new Utilisateur();
-        utilisateur.setLogin(request.getLogin());
-        utilisateur.setMotDePasseHash(passwordEncoder.encode(request.getMotDePasse()));
-        utilisateur.setActif(request.getActif() != null ? request.getActif() : true);
-        utilisateur = utilisateurRepository.save(utilisateur);
-
-        // Création du profil
-        Profil profil = new Profil();
-        profil.setNom(request.getNom());
-        profil.setPrenom(request.getPrenom());
-        profil.setEmail(request.getEmail());
-        profil.setTelephone(request.getTelephone());
-        profil.setMatriculeNational(request.getMatriculeNational());
-        profil.setUtilisateur(utilisateur);
-        profilRepository.save(profil);
-        utilisateur.setProfil(profil);
-        utilisateur = utilisateurRepository.save(utilisateur); // mise à jour
-
-        // Assignation des rôles
-        if (request.getRoleIds() != null && !request.getRoleIds().isEmpty()) {
-            for (UUID roleId : request.getRoleIds()) {
-                utilisateurRoleService.assignRoleToUser(utilisateur.getId(), roleId);
-            }
-        } else {
-            // Rôle par défaut (ÉTUDIANT)
-            Role etudiantRole = roleRepository.findByNom("ETUDIANT")
-                    .orElseThrow(() -> new ResourceNotFoundException("Rôle ETUDIANT non trouvé"));
-            utilisateurRoleService.assignRoleToUser(utilisateur.getId(), etudiantRole.getId());
-        }
-
-        UtilisateurMapper.toDTO(utilisateur);
+//    @Transactional
+//    public void createUser(UtilisateurRequestDTO request) {
+//        if (utilisateurRepository.existsByLogin(request.getLogin())) {
+//            throw new AlreadyExistsException("Login déjà utilisé");
+//        }
+//        if (profilRepository.findByEmail(request.getEmail()).isPresent()) {
+//            throw new AlreadyExistsException("Email déjà utilisé");
+//        }
+//
+//        // Création de l'utilisateur
+//        Utilisateur utilisateur = new Utilisateur();
+//        utilisateur.setLogin(request.getLogin());
+//        utilisateur.setMotDePasseHash(passwordEncoder.encode(request.getMotDePasse()));
+//        utilisateur.setActif(request.getActif() != null ? request.getActif() : true);
+//        utilisateur = utilisateurRepository.save(utilisateur);
+//
+//        // Création du profil
+//        Profil profil = new Profil();
+//        profil.setNom(request.getNom());
+//        profil.setPrenom(request.getPrenom());
+//        profil.setEmail(request.getEmail());
+//        profil.setTelephone(request.getTelephone());
+//        profil.setMatriculeNational(request.getMatriculeNational());
+//        profil.setUtilisateur(utilisateur);
+//        profilRepository.save(profil);
+//        utilisateur.setProfil(profil);
+//        utilisateur = utilisateurRepository.save(utilisateur); // mise à jour
+//
+//        // Assignation des rôles
+//        if (request.getRoleIds() != null && !request.getRoleIds().isEmpty()) {
+//            for (UUID roleId : request.getRoleIds()) {
+//                utilisateurRoleService.assignRoleToUser(utilisateur.getUtilisateurId(), roleId);
+//            }
+//        } else {
+//            // Rôle par défaut (ÉTUDIANT)
+//            Role etudiantRole = roleRepository.findByNom("ETUDIANT")
+//                    .orElseThrow(() -> new ResourceNotFoundException("Rôle ETUDIANT non trouvé"));
+//            utilisateurRoleService.assignRoleToUser(utilisateur.getUtilisateurId(), etudiantRole.getId());
+//        }
+//
+//        UtilisateurMapper.toDTO(utilisateur);
+//    }
+@Transactional
+public void createUser(UtilisateurRequestDTO request) {
+    if (utilisateurRepository.existsByLogin(request.getLogin())) {
+        throw new AlreadyExistsException("Login déjà utilisé");
     }
+    if (profilRepository.findByEmail(request.getEmail()).isPresent()) {
+        throw new AlreadyExistsException("Email déjà utilisé");
+    }
+
+    // Création de l'utilisateur
+    Utilisateur utilisateur = new Utilisateur();
+    utilisateur.setLogin(request.getLogin());
+    utilisateur.setMotDePasseHash(passwordEncoder.encode(request.getMotDePasse()));
+    utilisateur.setActif(request.getActif() != null ? request.getActif() : true);
+    utilisateur = utilisateurRepository.save(utilisateur);
+
+    // Création du profil
+    Profil profil = new Profil();
+    profil.setNom(request.getNom());
+    profil.setPrenom(request.getPrenom());
+    profil.setEmail(request.getEmail());
+    profil.setTelephone(request.getTelephone());
+    profil.setMatriculeNational(request.getMatriculeNational());
+    profil.setUtilisateur(utilisateur);
+    profilRepository.save(profil);
+    utilisateur.setProfil(profil);
+    utilisateur = utilisateurRepository.save(utilisateur); // mise à jour
+
+    // Assignation des rôles
+    if (request.getRoleIds() != null && !request.getRoleIds().isEmpty()) {
+        for (UUID roleId : request.getRoleIds()) {
+            utilisateurRoleService.assignRoleToUser(utilisateur.getUtilisateurId(), roleId);
+        }
+    } else {
+        // Rôle par défaut (ÉTUDIANT)
+        Role etudiantRole = roleRepository.findByNom("ETUDIANT")
+                .orElseThrow(() -> new ResourceNotFoundException("Rôle ETUDIANT non trouvé"));
+        utilisateurRoleService.assignRoleToUser(utilisateur.getUtilisateurId(), etudiantRole.getId());
+    }
+
+    // Créer automatiquement l'entité Étudiant si le rôle ETUDIANT a été attribué
+    // (si le rôle par défaut ou si la liste des rôles contient ETUDIANT)
+    boolean hasEtudiantRole = request.getRoleIds() == null || request.getRoleIds().isEmpty() ||
+            (request.getRoleIds() != null && request.getRoleIds().stream()
+                    .anyMatch(roleId -> {
+                        Role r = roleRepository.findById(roleId).orElse(null);
+                        return r != null && "ETUDIANT".equals(r.getNom());
+                    }));
+    if (hasEtudiantRole) {
+        try {
+            // Créer un numéro étudiant par défaut (basé sur l'ID)
+            String numeroEtudiant = "ETU" + utilisateur.getUtilisateurId().toString().substring(0, 8);
+            etudiantMetier.creerEtudiantPourUtilisateur(utilisateur.getUtilisateurId(), numeroEtudiant);
+        } catch (Exception e) {
+            log.warn("Impossible de créer l'étudiant : {}", e.getMessage());
+        }
+    }
+}
 
     @Transactional(readOnly = true)
     public UtilisateurDetailResponseDTO getUserById(UUID id) {

@@ -66,8 +66,8 @@ public class AuthService {
             utilisateurRepository.save(utilisateur);
 
             // Génération tokens
-            String accessToken = jwtUtils.generateAccessToken(utilisateur.getId(), utilisateur.getLogin());
-            String refreshToken = jwtUtils.generateRefreshToken(utilisateur.getId(), utilisateur.getLogin());
+            String accessToken = jwtUtils.generateAccessToken(utilisateur.getUtilisateurId(), utilisateur.getLogin());
+            String refreshToken = jwtUtils.generateRefreshToken(utilisateur.getUtilisateurId(), utilisateur.getLogin());
 
             // Sauvegarde session
             Session session = Session.builder()
@@ -129,8 +129,8 @@ public class AuthService {
         sessionRepository.invaliderSession(refreshToken, LocalDateTime.now());
 
         // Générer nouveaux tokens
-        String newAccessToken = jwtUtils.generateAccessToken(utilisateur.getId(), utilisateur.getLogin());
-        String newRefreshToken = jwtUtils.generateRefreshToken(utilisateur.getId(), utilisateur.getLogin());
+        String newAccessToken = jwtUtils.generateAccessToken(utilisateur.getUtilisateurId(), utilisateur.getLogin());
+        String newRefreshToken = jwtUtils.generateRefreshToken(utilisateur.getUtilisateurId(), utilisateur.getLogin());
 
         Session newSession = Session.builder()
                 .token(newRefreshToken)
@@ -144,7 +144,7 @@ public class AuthService {
     }
 
     @Transactional
-    public MessageResponseDTO changePassword(UUID userId, ChangementMotDePasseRequestDTO request) {
+    public void changePassword(UUID userId, ChangementMotDePasseRequestDTO request) {
         Utilisateur utilisateur = utilisateurRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Utilisateur", userId));
         if (!passwordEncoder.matches(request.getAncienMotDePasse(), utilisateur.getMotDePasseHash())) {
@@ -157,9 +157,9 @@ public class AuthService {
 
         // Invalider toutes les sessions de l'utilisateur
         sessionRepository.findAll().stream()
-                .filter(s -> s.getUtilisateur().getId().equals(userId) && s.getActif())
+                .filter(s -> s.getUtilisateur().getUtilisateurId().equals(userId) && s.getActif())
                 .forEach(s -> sessionRepository.invaliderSession(s.getToken(), LocalDateTime.now()));
-        return MessageResponseDTO.builder()
+        MessageResponseDTO.builder()
                 .message("Mot de passe changé avec succès")
                 .success(true)
                 .statusCode(200)
@@ -169,7 +169,7 @@ public class AuthService {
     @Transactional
     public void logout(UUID userId, String refreshToken) {
         sessionRepository.findByToken(refreshToken).ifPresent(session -> {
-            if (session.getUtilisateur().getId().equals(userId)) {
+            if (session.getUtilisateur().getUtilisateurId().equals(userId)) {
                 sessionRepository.invaliderSession(refreshToken, LocalDateTime.now());
             }
         });

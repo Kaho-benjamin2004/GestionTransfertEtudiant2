@@ -15,7 +15,7 @@ public class UtilisateurMapper {
     public static UtilisateurResponseDTO toDTO(Utilisateur utilisateur) {
         if (utilisateur == null) return null;
         return UtilisateurResponseDTO.builder()
-                .id(utilisateur.getId())
+                .id(utilisateur.getUtilisateurId())
                 .login(utilisateur.getLogin())
                 .actif(utilisateur.getActif())
                 .dateCreation(utilisateur.getDateCreation())
@@ -45,7 +45,7 @@ public class UtilisateurMapper {
     public static UtilisateurSimpleResponseDTO toSimpleDTO(Utilisateur utilisateur) {
         if (utilisateur == null) return null;
         return UtilisateurSimpleResponseDTO.builder()
-                .id(utilisateur.getId())
+                .id(utilisateur.getUtilisateurId())
                 .login(utilisateur.getLogin())
                 .nom(utilisateur.getProfil() != null ? utilisateur.getProfil().getNom() : null)
                 .prenom(utilisateur.getProfil() != null ? utilisateur.getProfil().getPrenom() : null)
@@ -57,7 +57,7 @@ public class UtilisateurMapper {
     public static UtilisateurDetailResponseDTO toDetailDTO(Utilisateur utilisateur) {
         if (utilisateur == null) return null;
         return UtilisateurDetailResponseDTO.builder()
-                .id(utilisateur.getId())
+                .id(utilisateur.getUtilisateurId())
                 .login(utilisateur.getLogin())
                 .actif(utilisateur.getActif())
                 .dateCreation(utilisateur.getDateCreation())

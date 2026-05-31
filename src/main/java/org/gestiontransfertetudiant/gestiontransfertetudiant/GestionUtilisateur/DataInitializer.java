@@ -45,11 +45,11 @@ public class DataInitializer implements CommandLineRunner {
         });
 
         // 3. Assigner le rôle ADMIN à cet utilisateur (si pas déjà fait)
-        boolean alreadyAssigned = utilisateurRoleRepository.findByUtilisateurId(adminUser.getId()).stream()
+        boolean alreadyAssigned = utilisateurRoleRepository.findByUtilisateurId(adminUser.getUtilisateurId()).stream()
                 .anyMatch(ur -> ur.getRole().getId().equals(adminRole.getId()));
 
         if (!alreadyAssigned) {
-            UtilisateurRoleId id = new UtilisateurRoleId(adminUser.getId(), adminRole.getId());
+            UtilisateurRoleId id = new UtilisateurRoleId(adminUser.getUtilisateurId(), adminRole.getId());
             UtilisateurRole ur = new UtilisateurRole();
             ur.setId(id);
             ur.setUtilisateur(adminUser);

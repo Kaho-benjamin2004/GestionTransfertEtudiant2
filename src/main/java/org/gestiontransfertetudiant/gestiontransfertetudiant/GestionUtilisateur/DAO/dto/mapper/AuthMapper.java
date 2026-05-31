@@ -24,7 +24,7 @@ public class AuthMapper {
                 .refreshToken(refreshToken)
                 .type("Bearer")
                 .expiresIn(expiresIn)
-                .utilisateurId(utilisateur.getId())
+                .utilisateurId(utilisateur.getUtilisateurId())
                 .login(utilisateur.getLogin())
                 .nom(utilisateur.getProfil() != null ? utilisateur.getProfil().getNom() : null)
                 .prenom(utilisateur.getProfil() != null ? utilisateur.getProfil().getPrenom() : null)

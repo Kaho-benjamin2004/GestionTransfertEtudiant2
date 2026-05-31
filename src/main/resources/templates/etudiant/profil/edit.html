@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Modifier mon profil</title>...</head>
+<body>
+<div class="flex h-screen overflow-hidden">
+    <aside>...</aside>
+    <div class="flex-grow flex flex-col overflow-hidden">
+        <header>...</header>
+        <main class="flex-grow p-8">
+            <div class="content-card p-6 max-w-2xl mx-auto">
+                <h2 class="text-xl font-bold mb-4">Modifier mes informations</h2>
+                <form th:action="@{/etudiant/profil/edit}" th:object="${profilRequest}" method="post" class="space-y-4">
+                    <div th:if="${#fields.hasErrors('*')}" class="bg-red-100 p-3 rounded text-red-700"><ul><li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li></ul></div>
+                    <div><label>Nom *</label><input type="text" th:field="*{nom}" required class="w-full border rounded p-3 bg-white/80"></div>
+                    <div><label>Prénom *</label><input type="text" th:field="*{prenom}" required class="w-full border rounded p-3 bg-white/80"></div>
+                    <div><label>Email *</label><input type="email" th:field="*{email}" required class="w-full border rounded p-3 bg-white/80"></div>
+                    <div><label>Téléphone</label><input type="tel" th:field="*{telephone}" class="w-full border rounded p-3 bg-white/80"></div>
+                    <div><label>Matricule national</label><input type="text" th:field="*{matriculeNational}" class="w-full border rounded p-3 bg-white/80"></div>
+                    <div class="flex justify-end space-x-3"><a th:href="@{/etudiant/profil/view}" class="bg-slate-200 px-4 py-2 rounded">Annuler</a><button type="submit" class="bg-univ-gold text-univ-navy px-6 py-2 rounded">Enregistrer</button></div>
+                </form>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html>

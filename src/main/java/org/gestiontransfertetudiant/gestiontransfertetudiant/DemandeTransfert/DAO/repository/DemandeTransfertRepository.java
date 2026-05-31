@@ -17,6 +17,11 @@ public interface DemandeTransfertRepository extends JpaRepository<DemandeTransfe
 
     long countByStatut(String statut);
     Page<DemandeTransfert> findByStatut(String statut, Pageable pageable);
-    @Query("SELECT d FROM DemandeTransfert d WHERE d.etudiant.utilisateur.id = :utilisateurId")
+    @Query("SELECT d FROM DemandeTransfert d WHERE d.etudiant.utilisateur.utilisateurId = :utilisateurId")
     List<DemandeTransfert> findByUtilisateurId(@Param("utilisateurId") UUID utilisateurId);
+
+    long countByEtudiantIdAndStatutNotIn(UUID etudiantId, List<String> acceptee);
+
+    @Query("SELECT COUNT(d) FROM DemandeTransfert d WHERE d.etudiant.id = :etudiantId AND d.statut NOT IN ('ACCEPTEE', 'REFUSEE', 'ANNULEE')")
+    long countByEtudiantIdAndStatutNotIn(@Param("etudiantId") UUID etudiantId);
 }

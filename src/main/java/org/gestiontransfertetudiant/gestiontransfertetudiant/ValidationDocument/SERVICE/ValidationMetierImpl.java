@@ -3,6 +3,7 @@ package org.gestiontransfertetudiant.gestiontransfertetudiant.ValidationDocument
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.gestiontransfertetudiant.gestiontransfertetudiant.DemandeTransfert.DAO.repository.ValidationRepository;
 import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionUtilisateur.SERVICE.execption.BusinessException;
 import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionUtilisateur.SERVICE.execption.ResourceNotFoundException;
 import org.gestiontransfertetudiant.gestiontransfertetudiant.ValidationDocument.DAO.dto.mapper.EtapeValidationMapper;
@@ -17,10 +18,7 @@ import org.gestiontransfertetudiant.gestiontransfertetudiant.ValidationDocument.
 import org.gestiontransfertetudiant.gestiontransfertetudiant.ValidationDocument.DAO.entity.HistoriqueValidation;
 import org.gestiontransfertetudiant.gestiontransfertetudiant.ValidationDocument.DAO.entity.Validation;
 import org.gestiontransfertetudiant.gestiontransfertetudiant.ValidationDocument.DAO.entity.Workflow;
-import org.gestiontransfertetudiant.gestiontransfertetudiant.ValidationDocument.DAO.repository.EtapeValidationRepository;
-import org.gestiontransfertetudiant.gestiontransfertetudiant.ValidationDocument.DAO.repository.HistoriqueValidationRepository;
-import org.gestiontransfertetudiant.gestiontransfertetudiant.ValidationDocument.DAO.repository.ValidationRepository;
-import org.gestiontransfertetudiant.gestiontransfertetudiant.ValidationDocument.DAO.repository.WorkflowRepository;
+import org.gestiontransfertetudiant.gestiontransfertetudiant.ValidationDocument.DAO.repository.*;
 import org.gestiontransfertetudiant.gestiontransfertetudiant.ValidationDocument.SERVICE.IValidationMetier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,9 +34,9 @@ import java.util.stream.Collectors;
 @Transactional
 public class ValidationMetierImpl implements IValidationMetier {
 
-    private final WorkflowRepository workflowRepository;
+    private final ValidationWorkflowRepository  validationRepository;
     private final EtapeValidationRepository etapeRepository;
-    private final ValidationRepository validationRepository;
+    private final WorkFlowRepository workFlowRepository;
     private final HistoriqueValidationRepository historiqueRepository;
 
     @Override
@@ -54,8 +52,8 @@ public class ValidationMetierImpl implements IValidationMetier {
         if (existantes.stream().anyMatch(v -> !List.of("VALIDEE", "REJETEE", "ANNULEE").contains(v.getStatut()))) {
             throw new BusinessException("Une validation est déjà en cours pour cette entité", "VALIDATION_EN_COURS");
         }
-        Workflow workflow = workflowRepository.findById(request.getWorkflowId())
-                .orElseThrow(() -> new ResourceNotFoundException("Workflow", request.getWorkflowId()));
+        Validation workflow = validationRepository.findById(request.getWorkflowId())
+                .orElseThrow();
         Validation validation = ValidationMapper.toEntity(request, workflow);
         validation = validationRepository.save(validation);
         // Ajout historique
@@ -142,11 +140,11 @@ public class ValidationMetierImpl implements IValidationMetier {
 
     @Override
     public WorkflowResponseDTO definirWorkflow(WorkflowRequestDTO request, UUID adminId) throws BusinessException {
-        if (workflowRepository.findByNom(request.getNom()).isPresent()) {
+        if (validationRepository.findByNom(request.getNom()).isPresent()) {
             throw new BusinessException("Un workflow avec ce nom existe déjà", "DUPLICATE_WORKFLOW");
         }
         Workflow workflow = WorkflowMapper.toEntity(request);
-        workflow = workflowRepository.save(workflow);
+        workflow =workFlowRepository.save(workflow);
         // Sauvegarder les étapes
         for (var etapeReq : request.getEtapes()) {
             EtapeValidation etape = EtapeValidationMapper.toEntity(etapeReq, workflow);
