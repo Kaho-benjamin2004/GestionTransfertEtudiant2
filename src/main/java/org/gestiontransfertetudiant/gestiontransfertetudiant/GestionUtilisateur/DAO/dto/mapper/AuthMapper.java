@@ -15,24 +15,38 @@ public class AuthMapper {
             return AuthResponseDTO.builder()
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
-                    .type("Bearer")
                     .expiresIn(expiresIn)
+                    .statusCode(200)
+                    .message("Login successful")
+                    .success(true)
                     .build();
         }
+        
+        List<String> roles = utilisateur.getUtilisateurRoles() != null ?
+                utilisateur.getUtilisateurRoles().stream()
+                        .map(ur -> ur.getRole().getNom())
+                        .collect(Collectors.toList()) : null;
+        
+        String nom = utilisateur.getProfil() != null ? utilisateur.getProfil().getNom() : null;
+        String prenom = utilisateur.getProfil() != null ? utilisateur.getProfil().getPrenom() : null;
+        String email = utilisateur.getProfil() != null ? utilisateur.getProfil().getEmail() : null;
+        
+        AuthResponseDTO.UserInfoDTO userInfo = AuthResponseDTO.UserInfoDTO.builder()
+                .id(utilisateur.getUtilisateurId().toString())
+                .email(email)
+                .nom(nom)
+                .prenom(prenom)
+                .roles(roles)
+                .build();
+        
         return AuthResponseDTO.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .type("Bearer")
                 .expiresIn(expiresIn)
-                .utilisateurId(utilisateur.getUtilisateurId())
-                .login(utilisateur.getLogin())
-                .nom(utilisateur.getProfil() != null ? utilisateur.getProfil().getNom() : null)
-                .prenom(utilisateur.getProfil() != null ? utilisateur.getProfil().getPrenom() : null)
-                .email(utilisateur.getProfil() != null ? utilisateur.getProfil().getEmail() : null)
-                .roles(utilisateur.getUtilisateurRoles() != null ?
-                        utilisateur.getUtilisateurRoles().stream()
-                        .map(ur -> ur.getRole().getNom())
-                        .collect(Collectors.toList()) : null)
+                .statusCode(200)
+                .message("Login successful")
+                .success(true)
+                .user(userInfo)
                 .build();
     }
 

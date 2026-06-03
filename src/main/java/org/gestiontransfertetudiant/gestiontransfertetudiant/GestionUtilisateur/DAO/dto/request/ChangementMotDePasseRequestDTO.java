@@ -7,10 +7,13 @@ import lombok.Data;
 
 @Data
 public class ChangementMotDePasseRequestDTO {
-    @NotBlank(message = "L'ancien mot de passe est obligatoire")
-    private String ancienMotDePasse;
+    @NotBlank(message = "Le mot de passe actuel est obligatoire")
+    private String currentPassword;
 
     @NotBlank(message = "Le nouveau mot de passe est obligatoire")
     @Size(min = 8, message = "Le nouveau mot de passe doit contenir au moins 8 caractères")
-    private String nouveauMotDePasse;
+    private String newPassword;
+
+    @NotBlank(message = "La confirmation du mot de passe est obligatoire")
+    private String confirmPassword;
 }

@@ -1,0 +1,110 @@
+<div class="bg-campus-blur min-h-screen flex items-center justify-center p-4 sm:p-6 md:p-8">
+
+  <div class="w-full max-w-md bg-white rounded-[24px] shadow-2xl overflow-hidden border border-white/20 flex flex-col transition-all duration-300 transform">
+
+    <div class="p-6 pb-4 border-b border-slate-100 flex flex-col items-center justify-center bg-white">
+      <div class="flex items-center space-x-3">
+        <svg class="w-12 h-12 text-univ-navy" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4"/>
+          <path d="M25 65 C20 50, 25 35, 35 25" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <path d="M75 65 C80 50, 75 35, 65 25" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <path d="M35 60 L50 65 L65 60 L65 45 L50 50 L35 45 Z" fill="currentColor" opacity="0.8"/>
+          <path d="M48 75 L52 75 L53 52 L47 52 Z" fill="#bfa15f"/>
+          <path d="M45 48 C48 40, 52 40, 55 48 C51 44, 49 44, 45 48 Z" fill="url(#torch-flame)"/>
+          <defs>
+            <linearGradient id="torch-flame" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#bfa15f"/>
+              <stop offset="100%" stop-color="#ffedd5"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="leading-tight text-left">
+          <span class="block font-bold text-xs tracking-widest uppercase text-univ-navy">Université de</span>
+          <span class="block font-serif text-xl font-bold tracking-wide text-univ-gold">l'Excellence</span>
+          <span class="block text-[8px] tracking-widest text-slate-400 font-semibold font-mono uppercase">Gestion des Transferts</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-8 space-y-6 flex-1 flex flex-col justify-between">
+
+      <div class="text-center space-y-1">
+        <h1 class="text-lg font-extrabold text-univ-navy tracking-tight uppercase">Gestion des Transferts d'Étudiants</h1>
+        <h2 class="text-sm font-semibold text-univ-gold">Espace Connexion</h2>
+      </div>
+
+      <div *ngIf="errorMessage" class="bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-xl p-3 flex items-center space-x-2">
+        <i class="fa-solid fa-circle-exclamation text-base"></i>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5" novalidate>
+
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider" for="email">Email</label>
+          <div class="relative">
+                      <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                          <i class="fa-regular fa-envelope text-sm"></i>
+                      </span>
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              placeholder="Entrez votre email"
+              class="w-full pl-10 border focus:border-univ-gold focus:ring-0 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400/80 focus:outline-none transition"
+              [ngClass]="{
+                            'border-rose-500 bg-rose-50/30': submitted && f['email'].errors,
+                            'border-slate-200 bg-slate-50/50': !(submitted && f['email'].errors)
+                          }">
+          </div>
+          <div *ngIf="submitted && f['email'].errors" class="text-rose-500 text-[11px] font-medium pt-0.5 pl-1">
+            <span *ngIf="f['email'].errors['required']"><i class="fa-solid fa-xs fa-circle-info mr-1"></i> L'email est requis</span>
+            <span *ngIf="f['email'].errors['email']"><i class="fa-solid fa-xs fa-circle-info mr-1"></i> Email invalide</span>
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider" for="password">Mot de passe</label>
+          <div class="relative">
+                      <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                          <i class="fa-solid fa-lock text-sm"></i>
+                      </span>
+            <input
+              [type]="hidePassword ? 'password' : 'text'"
+              id="password"
+              formControlName="password"
+              placeholder="Entrez votre mot de passe"
+              class="w-full pl-10 pr-10 border focus:border-univ-gold focus:ring-0 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400/80 focus:outline-none transition"
+              [ngClass]="{
+                            'border-rose-500 bg-rose-50/30': submitted && f['password'].errors,
+                            'border-slate-200 bg-slate-50/50': !(submitted && f['password'].errors)
+                          }">
+
+            <button type="button" (click)="hidePassword = !hidePassword" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-univ-navy transition">
+              <i class="fa-regular" [ngClass]="hidePassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+            </button>
+          </div>
+          <div *ngIf="submitted && f['password'].errors" class="text-rose-500 text-[11px] font-medium pt-0.5 pl-1">
+            <span *ngIf="f['password'].errors['required']"><i class="fa-solid fa-xs fa-circle-info mr-1"></i> Le mot de passe est requis</span>
+            <span *ngIf="f['password'].errors['minlength']"><i class="fa-solid fa-xs fa-circle-info mr-1"></i> Le mot de passe doit contenir au moins 6 caractères</span>
+          </div>
+        </div>
+
+        <button type="submit" [disabled]="loading"
+                class="w-full py-3.5 bg-univ-navy hover:bg-univ-navyLight disabled:bg-slate-400 text-white font-bold text-xs tracking-wider uppercase rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 pt-3">
+          <i *ngIf="!loading" class="fa-solid fa-right-to-bracket text-sm"></i>
+          <i *ngIf="loading" class="fa-solid fa-circle-notch animate-spin text-sm"></i>
+          <span>{{ loading ? 'Connexion en cours...' : 'Se Connecter' }}</span>
+        </button>
+      </form>
+
+      <div class="pt-4 border-t border-slate-100 flex flex-col items-center text-xs">
+              <span class="text-slate-500">
+                  Pas de compte ?
+                  <button type="button" (click)="navigateToRegister()" class="text-univ-gold hover:text-univ-goldLight font-bold underline transition ml-1">S'inscrire</button>
+              </span>
+      </div>
+    </div>
+
+  </div>
+</div>

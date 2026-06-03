@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{../fragments/header :: head(${title})}"></head>
+<body class="bg-bg min-h-screen">
+<div class="flex h-screen overflow-hidden">
+    <aside th:replace="~{../fragments/sidebar :: sidebar}"></aside>
+    <div class="flex-grow flex flex-col overflow-hidden">
+        <div th:replace="~{../fragments/header_bandeau :: header}"></div>
+        <main class="flex-grow p-8 overflow-y-auto custom-scrollbar" th:fragment="content">
+            <div th:insert="~{::pageContent}"></div>
+        </main>
+    </div>
+</div>
+</body>
+</html>

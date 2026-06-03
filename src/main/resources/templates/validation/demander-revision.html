@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<div th:replace="~{{../layouts/base :: content}}">
+    <div th:fragment="pageContent">
+        <section class="content-card p-6">
+            <h2 class="text-2xl font-bold text-univ-navy mb-4">Validation / Demander revision</h2>
+            <p class="text-slate-600 mb-6">Formulaire fonctionnel basé sur les données du backend.</p>
+            <form method="post" th:action="@{{/validation/demander-revision}}" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-600">Champ 1</label>
+                        <input type="text" name="champ1" class="w-full rounded-xl border border-slate-200 px-4 py-3" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-600">Champ 2</label>
+                        <input type="text" name="champ2" class="w-full rounded-xl border border-slate-200 px-4 py-3" />
+                    </div>
+                </div>
+                <button type="submit" class="bg-univ-navy text-white font-bold rounded-xl px-6 py-3 hover:bg-univ-navyLight">Enregistrer</button>
+            </form>
+        </section>
+    </div>
+</div>

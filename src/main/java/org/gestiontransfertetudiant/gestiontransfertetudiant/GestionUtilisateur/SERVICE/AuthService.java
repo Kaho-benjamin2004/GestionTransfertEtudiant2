@@ -46,22 +46,24 @@ public class AuthService {
 
     @Transactional
     public AuthResponseDTO login(LoginRequestDTO request, HttpServletRequest httpRequest) {
-        // Vérifier existence et blocage
-        Utilisateur utilisateur = utilisateurRepository.findByLogin(request.getUsername())
-                .orElseThrow(() -> new AuthenticationException("Login ou mot de passe incorrect"));
+        // Support both email and login (username)
+        Utilisateur utilisateur = utilisateurRepository.findByEmail(request.getEmail())
+                .or(() -> utilisateurRepository.findByLogin(request.getEmail()))
+                .orElseThrow(() -> new AuthenticationException("Email/Login ou mot de passe incorrect"));
 
         if (utilisateur.getBloqueJusqua() != null && utilisateur.getBloqueJusqua().isAfter(LocalDateTime.now())) {
             throw new AuthenticationException("Compte bloqué jusqu'au " + utilisateur.getBloqueJusqua());
         }
 
         try {
+            // Use login field for authentication manager
             Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+                    new UsernamePasswordAuthenticationToken(utilisateur.getLogin(), request.getPassword())
             );
             SecurityContextHolder.getContext().setAuthentication(auth);
 
             // Réinitialiser les tentatives
-            utilisateurRepository.reinitialiserTentatives(request.getUsername());
+            utilisateurRepository.reinitialiserTentatives(utilisateur.getLogin());
             utilisateur.setDerniereConnexion(LocalDateTime.now());
             utilisateurRepository.save(utilisateur);
 
@@ -91,10 +93,10 @@ public class AuthService {
 
         } catch (Exception e) {
             // Incrémenter les tentatives
-            utilisateurRepository.incrementerTentativesEchec(request.getUsername());
+            utilisateurRepository.incrementerTentativesEchec(utilisateur.getLogin());
 
             // Recharger l'utilisateur pour vérifier le seuil
-            utilisateurRepository.findByLogin(request.getPassword()).ifPresent(u -> {
+            utilisateurRepository.findByLogin(utilisateur.getLogin()).ifPresent(u -> {
                 journalConnexionRepository.save(JournalConnexion.builder()
                         .succes(false)
                         .raisonEchec(e.getMessage())
@@ -103,7 +105,7 @@ public class AuthService {
 
                 if (u.getTentativeEchec() >= MAX_TENTATIVES) {
                     LocalDateTime finBlocage = LocalDateTime.now().plusMinutes(TEMPS_BLOCAGE_MINUTES);
-                    utilisateurRepository.bloquerUtilisateur(request.getUsername(), finBlocage);
+                    utilisateurRepository.bloquerUtilisateur(utilisateur.getLogin(), finBlocage);
                     journalConnexionRepository.save(JournalConnexion.builder()
                             .succes(false)
                             .raisonEchec("Trop de tentatives - compte bloqué " + TEMPS_BLOCAGE_MINUTES + " min")
@@ -111,7 +113,7 @@ public class AuthService {
                             .build());
                 }
             });
-            throw new AuthenticationException("Login ou mot de passe incorrect");
+            throw new AuthenticationException("Email/Login ou mot de passe incorrect");
         }
     }
 
@@ -147,10 +149,17 @@ public class AuthService {
     public void changePassword(UUID userId, ChangementMotDePasseRequestDTO request) {
         Utilisateur utilisateur = utilisateurRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Utilisateur", userId));
-        if (!passwordEncoder.matches(request.getAncienMotDePasse(), utilisateur.getMotDePasseHash())) {
-            throw new AuthenticationException("Ancien mot de passe incorrect");
+        
+        if (!passwordEncoder.matches(request.getCurrentPassword(), utilisateur.getMotDePasseHash())) {
+            throw new AuthenticationException("Mot de passe actuel incorrect");
         }
-        utilisateur.setMotDePasseHash(passwordEncoder.encode(request.getNouveauMotDePasse()));
+        
+        // Verify password confirmation
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new AuthenticationException("Les mots de passe ne correspondent pas");
+        }
+        
+        utilisateur.setMotDePasseHash(passwordEncoder.encode(request.getNewPassword()));
         utilisateur.setTentativeEchec(0);
         utilisateur.setBloqueJusqua(null);
         utilisateurRepository.save(utilisateur);
@@ -159,6 +168,7 @@ public class AuthService {
         sessionRepository.findAll().stream()
                 .filter(s -> s.getUtilisateur().getUtilisateurId().equals(userId) && s.getActif())
                 .forEach(s -> sessionRepository.invaliderSession(s.getToken(), LocalDateTime.now()));
+        
         MessageResponseDTO.builder()
                 .message("Mot de passe changé avec succès")
                 .success(true)

@@ -3,12 +3,12 @@ package org.gestiontransfertetudiant.gestiontransfertetudiant.GestionUtilisateur
 import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionUtilisateur.DAO.dto.request.UtilisateurRequestDTO;
+import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionUtilisateur.DAO.dto.request.RegisterUserRequestDTO;
 
 
 @Data
 @NoArgsConstructor
 public class RegistrationDTO {
     @Valid
-    private UtilisateurRequestDTO utilisateurRequest = new UtilisateurRequestDTO();
+    private RegisterUserRequestDTO registerRequest = new RegisterUserRequestDTO();
 }

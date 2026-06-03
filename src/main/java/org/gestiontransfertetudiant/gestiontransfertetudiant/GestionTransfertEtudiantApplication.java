@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class GestionTransfertEtudiantApplication {
 
-
     public static void main(String[] args) {
         SpringApplication.run(GestionTransfertEtudiantApplication.class, args);
     }

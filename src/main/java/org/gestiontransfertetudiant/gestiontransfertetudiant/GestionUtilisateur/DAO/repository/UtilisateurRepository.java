@@ -14,10 +14,10 @@ import java.util.UUID;
 public interface UtilisateurRepository extends JpaRepository<Utilisateur, UUID> {
     Optional<Utilisateur> findByLogin(String login);
     boolean existsByLogin(String login);
-    // Dans RoleRepository
-   
-
-
+    
+    // Find by email via Profil relationship
+    @Query("SELECT u FROM Utilisateur u LEFT JOIN FETCH u.utilisateurRoles ur LEFT JOIN FETCH ur.role WHERE u.profil.email = :email")
+    Optional<Utilisateur> findByEmail(@Param("email") String email);
 
     @Modifying
     @Transactional
@@ -33,8 +33,9 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, UUID> 
     @Transactional
     @Query("UPDATE Utilisateur u SET u.tentativeEchec = 0, u.bloqueJusqua = null WHERE u.login = :login")
     void reinitialiserTentatives(@Param("login") String login);
+    
     @Query("SELECT u FROM Utilisateur u LEFT JOIN FETCH u.utilisateurRoles ur LEFT JOIN FETCH ur.role WHERE u.login = :login")
     Optional<Utilisateur> findByLoginWithRoles(@Param("login") String login);
 
-   Utilisateur findByUtilisateurId(UUID utilisateurId);
+    Utilisateur findByUtilisateurId(UUID utilisateurId);
 }

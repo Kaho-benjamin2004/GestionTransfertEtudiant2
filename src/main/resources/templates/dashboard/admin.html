@@ -124,16 +124,16 @@
                     <!-- Carte 1 -->
                     <div class="content-card p-6">
                         <div class="flex items-center justify-between">
-                            <div><i class="fa-solid fa-users text-3xl text-univ-gold"></i><h3 class="text-lg font-bold mt-2">Utilisateurs</h3><p class="text-3xl font-bold" th:text="${statsUtilisateurs != null ? statsUtilisateurs : 0}">0</p><span class="text-xs text-slate-500">Comptes actifs</span></div>
+                            <div><i class="fa-solid fa-users text-3xl text-univ-gold"></i><h3 class="text-lg font-bold mt-2">Utilisateurs</h3><p id="stats-utilisateurs" class="text-3xl font-bold" th:text="${statsUtilisateurs != null ? statsUtilisateurs : 0}">0</p><span class="text-xs text-slate-500">Comptes actifs</span></div>
                         </div>
                     </div>
                     <!-- Carte 2 -->
                     <div class="content-card p-6">
-                        <div><i class="fa-solid fa-exchange-alt text-3xl text-univ-gold"></i><h3 class="text-lg font-bold mt-2">Transferts</h3><p class="text-3xl font-bold" th:text="${statsTransferts != null ? statsTransferts : 0}">0</p><span class="text-xs text-slate-500">Demandes en cours</span></div>
+                        <div><i class="fa-solid fa-exchange-alt text-3xl text-univ-gold"></i><h3 class="text-lg font-bold mt-2">Transferts</h3><p id="stats-transferts" class="text-3xl font-bold" th:text="${statsTransferts != null ? statsTransferts : 0}">0</p><span class="text-xs text-slate-500">Demandes en cours</span></div>
                     </div>
                     <!-- Carte 3 -->
                     <div class="content-card p-6">
-                        <div><i class="fa-solid fa-chart-line text-3xl text-univ-gold"></i><h3 class="text-lg font-bold mt-2">Taux de fraude</h3><p class="text-3xl font-bold">0%</p><span class="text-xs text-slate-500">Détection d'anomalies</span></div>
+                        <div><i class="fa-solid fa-chart-line text-3xl text-univ-gold"></i><h3 class="text-lg font-bold mt-2">Taux de fraude</h3><p id="taux-fraude" class="text-3xl font-bold">0%</p><span class="text-xs text-slate-500">Détection d'anomalies</span></div>
                     </div>
                 </div>
 
@@ -189,41 +189,40 @@
         document.getElementById('nav-' + tabId).className = "nav-item flex items-center space-x-3 px-4 py-3 rounded-xl bg-univ-gold text-univ-navy font-semibold transition duration-200 shadow-md";
     }
 
-    // Initialisation des graphiques Chart.js (données mockées pour l'exemple)
+    // Initialisation des graphiques Chart.js (données depuis API)
     document.addEventListener('DOMContentLoaded', function() {
-        // Graphique linéaire : évolution des transferts
-        const ctx1 = document.getElementById('transferChart').getContext('2d');
-        new Chart(ctx1, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
-                datasets: [{
-                    label: 'Demandes de transfert',
-                    data: [12, 19, 15, 17, 24, 30],
-                    borderColor: '#bfa15f',
-                    backgroundColor: 'rgba(191, 161, 95, 0.1)',
-                    tension: 0.3,
-                    fill: true
-                }]
-            },
-            options: { responsive: true, maintainAspectRatio: true }
-        });
+        // Récupère les statistiques et met à jour les compteurs
+        fetch('/api/dashboard/stats').then(r => r.json()).then(stats => {
+            try {
+                document.getElementById('stats-utilisateurs').innerText = stats.statsUtilisateurs || 0;
+                document.getElementById('stats-transferts').innerText = stats.statsTransferts || 0;
+                document.getElementById('taux-fraude').innerText = (stats.tauxFraude != null ? stats.tauxFraude + '%' : '0%');
+            } catch (e) { console.error(e); }
+        }).catch(e => console.error(e));
 
-        // Graphique en barres : répartition par établissement
-        const ctx2 = document.getElementById('etablissementChart').getContext('2d');
-        new Chart(ctx2, {
-            type: 'bar',
-            data: {
-                labels: ['Publique', 'Privé', 'Étranger'],
-                datasets: [{
-                    label: 'Nombre de transferts',
-                    data: [45, 28, 12],
-                    backgroundColor: '#133054',
-                    borderRadius: 8
-                }]
-            },
-            options: { responsive: true, maintainAspectRatio: true }
-        });
+        // Graphique évolution des transferts
+        fetch('/api/dashboard/transfers').then(r => r.json()).then(data => {
+            const labels = data.labels || [];
+            const values = data.values || [];
+            const ctx1 = document.getElementById('transferChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'line',
+                data: { labels: labels, datasets: [{ label: 'Demandes de transfert', data: values, borderColor: '#bfa15f', backgroundColor: 'rgba(191, 161, 95, 0.1)', tension: 0.3, fill: true }] },
+                options: { responsive: true, maintainAspectRatio: true }
+            });
+        }).catch(e => console.error(e));
+
+        // Graphique répartition établissements
+        fetch('/api/dashboard/etablissements').then(r => r.json()).then(data => {
+            const labels = data.labels || [];
+            const values = data.values || [];
+            const ctx2 = document.getElementById('etablissementChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: { labels: labels, datasets: [{ label: 'Nombre de transferts', data: values, backgroundColor: '#133054', borderRadius: 8 }] },
+                options: { responsive: true, maintainAspectRatio: true }
+            });
+        }).catch(e => console.error(e));
     });
 </script>
 </body>

@@ -22,7 +22,7 @@ public class DataInitializer implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final UtilisateurRepository utilisateurRepository;
     private final UtilisateurRoleRepository utilisateurRoleRepository;
-    private final PasswordEncoder passwordEncoder;
+//    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -39,7 +39,7 @@ public class DataInitializer implements CommandLineRunner {
         Utilisateur adminUser = utilisateurRepository.findByLogin("admin").orElseGet(() -> {
             Utilisateur user = new Utilisateur();
             user.setLogin("admin");
-            user.setMotDePasseHash(passwordEncoder.encode("admin"));
+            user.setMotDePasseHash("admin");
             user.setActif(true);
             return utilisateurRepository.save(user);
         });

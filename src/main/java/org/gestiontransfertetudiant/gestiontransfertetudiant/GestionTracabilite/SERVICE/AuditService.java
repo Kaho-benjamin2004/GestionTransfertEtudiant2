@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 
 import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionTracabilite.DAO.entity.AuditLog;
 import org.gestiontransfertetudiant.gestiontransfertetudiant.GestionTracabilite.DAO.repository.AuditLogRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,5 +30,10 @@ public class AuditService {
                 .dateAction(LocalDateTime.now())
                 .build();
         auditLogRepository.save(log);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<AuditLog> getAuditLogs(Pageable pageable) {
+        return auditLogRepository.findAll(pageable);
     }
 }
