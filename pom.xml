@@ -105,7 +105,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         <!-- Pour la gestion des expressions JSON (paramètres des règles) -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
